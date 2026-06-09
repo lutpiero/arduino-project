@@ -22,15 +22,19 @@ jobs:
         # you would add: arduino-cli core install esp32:esp32
         run: arduino-cli core install arduino:avr
 
-      - name: Compile Sketch
-        # The sketch must live in a folder whose name matches the .ino main file.
+      - name: Compile All Sketches
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./sketch
+          for sketch in sketch/*; do
+            if [ -d "$sketch" ]; then
+              echo "Compiling $sketch"
+              arduino-cli compile --fqbn arduino:avr:uno --export-binaries "$sketch"
+            fi
+          done
         
-      - name: Upload Hex Artifact
+      - name: Upload Hex Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: compiled-arduino-hex
-          # Grabs all generated hex files (including the one with the bootloader attached)
-          path: ./blink-fast/build/arduino.avr.uno/*.hex
+          # Grabs all generated hex files from each sketch build folder.
+          path: sketch/*/build/arduino.avr.uno/*.hex
           if-no-files-found: error
