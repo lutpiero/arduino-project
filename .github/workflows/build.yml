@@ -25,7 +25,7 @@ jobs:
       - name: Compile Sketch
         # The sketch must live in a folder whose name matches the .ino main file.
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./blink-fast
+          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./sketch
         
       - name: Upload Hex Artifact
         uses: actions/upload-artifact@v4
