@@ -1,0 +1,37 @@
+name: Build Arduino Firmware
+
+on:
+  push:
+    branches:
+      - deploy
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Arduino CLI
+        uses: arduino/setup-arduino-cli@v2
+
+      - name: Install Platform Core
+        # Installs the standard Arduino AVR core. 
+        # If you are compiling for your home automation or robotics projects utilizing the ESP32-C3, 
+        # you would add: arduino-cli core install esp32:esp32
+        run: arduino-cli core install arduino:avr
+
+      - name: Compile Sketch
+        # The --export-binaries flag forces the CLI to drop the compiled .hex or .bin 
+        # into a 'build' folder right next to the .ino file.
+        run: |
+          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./Firmware/Firmware.ino
+        
+      - name: Upload Hex Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-arduino-hex
+          # Grabs all generated hex files (including the one with the bootloader attached)
+          path: ./Firmware/build/arduino.avr.uno/*.hex
+          if-no-files-found: error
