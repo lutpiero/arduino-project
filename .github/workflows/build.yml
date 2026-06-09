@@ -23,15 +23,14 @@ jobs:
         run: arduino-cli core install arduino:avr
 
       - name: Compile Sketch
-        # The --export-binaries flag forces the CLI to drop the compiled .hex or .bin 
-        # into a 'build' folder right next to the .ino file.
+        # The sketch must live in a folder whose name matches the .ino main file.
         run: |
-          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./blink-fast.ino
+          arduino-cli compile --fqbn arduino:avr:uno --export-binaries ./blink-fast
         
       - name: Upload Hex Artifact
         uses: actions/upload-artifact@v4
         with:
           name: compiled-arduino-hex
           # Grabs all generated hex files (including the one with the bootloader attached)
-          path: ./Firmware/build/arduino.avr.uno/*.hex
+          path: ./blink-fast/build/arduino.avr.uno/*.hex
           if-no-files-found: error
