@@ -19,5 +19,5 @@ void loop() {
   Serial.print(tempC);
   Serial.println(" °C");
   
-  delay(1000); // Wait 1 second before the next reading
+  delay(5000); // Wait 1 second before the next reading
 }
